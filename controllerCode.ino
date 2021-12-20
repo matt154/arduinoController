@@ -1,3 +1,4 @@
+#include <RCSwitch.h>
 //joystick values
 #define UP_X 1023
 #define UP_Y 511
@@ -22,11 +23,10 @@ typedef enum Directions{
   ILEGAL
 } Directions;
 
-Directions getDirection(int x,int y);
-int xPosition = 0;
-int yPosition = 0;
-int SW_state = 0;
 
+
+
+Directions getDirection(int x,int y);
 
 
 Directions getDirection(int x,int y){
@@ -47,10 +47,16 @@ Directions getDirection(int x,int y){
   }
 }
 
+int xPosition = 0;
+int yPosition = 0;
+int SW_state = 0;
+RCSwitch mySwitch = RCSwitch();
+
 void setup()
 {
   Serial.begin(9600);
-
+  
+  mySwitch.enableTransmit(10);
   pinMode(JOYSTICK_X, INPUT);
   pinMode(JOYSTICK_Y, INPUT);
   pinMode(JOYSTICK_MS, INPUT_PULLUP);
@@ -64,21 +70,28 @@ void loop()
 
   switch (getDirection(xPosition, yPosition)){
     case Directions::UP:
+      mySwitch.send(1, 3);
       Serial.println("up");
       break;
     case Directions::DOWN:
+      mySwitch.send(2,  3);
       Serial.println("down");
       break;
     case Directions::RIGHT:
+      mySwitch.send(3,  3);
       Serial.println("right");
       break;
     case Directions::LEFT:
+      mySwitch.send(4,  3);
       Serial.println("left");
       break;
     case Directions::ILEGAL:
+      mySwitch.send(5,  3);
       Serial.println("ILEGAL");
       break;
   }
+  delay(1000);  
+  
   Serial.print("x: ");
   Serial.println(xPosition);
   Serial.print("y: ");
